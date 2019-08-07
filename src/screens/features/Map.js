@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Text, View, StyleSheet, Dimensions, PermissionsAndroid } from 'react-native'
+import { Text, View, TextInput, StyleSheet, Dimensions, PermissionsAndroid, TouchableOpacity } from 'react-native'
 import MapView from 'react-native-maps'
 import {Marker} from 'react-native-maps'
 
@@ -10,6 +10,7 @@ const LONGITUDE = 106.8084708;
 const LATITUDE_DELTA = 0.05;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 const SPACE = 0.01;
+let id = 0;
 
 function log(eventName, e) {
     console.log(eventName, e.nativeEvent);
@@ -28,10 +29,39 @@ export default class Map extends Component {
                 latitude: '',
                 longitude: '',
             },
+            name:'',
             longitude:'',
             latitude:'',
-            location: null
+            location: null,
+            markers:[]
         }
+        this.onMapPress = this.onMapPress.bind(this)
+    }
+
+    onMapPress(e) {
+        this.setState({
+            markers: [
+                ...this.state.markers,
+                {
+                    coordinate: e.nativeEvent.coordinate,
+                    key: `marker ${id++}`,
+                },
+            ],
+        });
+    }
+
+    handleSave(e) {
+        this.setState({
+            markers: [
+                ...this.state.markers,
+                {
+                    coordinate: {longitude:this.state.longitude, latitude:this.state.latitude},
+                    key: `marker ${id++}`,
+                    description:`${this.state.name}`
+                },
+            ],
+        })
+        this.setState({name:''})
     }
 
     async componentWillMount() {
@@ -42,17 +72,19 @@ export default class Map extends Component {
     }
     
     render() {
-        console.log(this.state.longitude)
+        console.log(this.state.markers)
         console.log(this.state.b)
         return (
             <View style={styles.container}>
-                <MapView style={styles.map}
+                <MapView 
+                    style={styles.map}
                     initialRegion={{
                         latitude: this.state.latitude,
                         longitude: this.state.longitude,
                         latitudeDelta: LATITUDE_DELTA,
                         longitudeDelta: LONGITUDE_DELTA,
                     }}
+                    //onPress={this.onMapPress}
                 >
                     <Marker
                         draggable
@@ -63,6 +95,14 @@ export default class Map extends Component {
                         onDragEnd={e => this.setState({longitude:e.nativeEvent.coordinate.longitude, latitude:e.nativeEvent.coordinate.latitude})}
                         onPress={e => log('onPress', e)}
                     />
+                    {this.state.markers.map((marker) => (
+                        <Marker
+                            title={marker.description}
+                            key={marker.key}
+                            coordinate={marker.coordinate}
+                            pinColor={'gold'}
+                        />
+                    ))}
                 </MapView>
                 <View style={{position:'absolute', top:10, padding:20}} >
                     <View style={{marginBottom:20, borderRadius:40, backgroundColor:'rgba(255,255,255,0.9)', width:350, alignItems:'center',justifyContent:'center'}} >
@@ -76,6 +116,28 @@ export default class Map extends Component {
                             latitude: {this.state.latitude === '' ? 'Please move the markaer' : this.state.latitude}
                         </Text>
                     </View>
+                </View>
+                <View style={styles.buttonContainer}>
+                    {/* <TouchableOpacity
+                        onPress={() => this.setState({ markers: [] })}
+                        style={styles.bubble}
+                    >
+                        <Text>Tap to create a marker of random color</Text>
+                    </TouchableOpacity> */}
+                    <View style={{marginBottom:20, borderRadius:40, backgroundColor:'rgba(255,255,255,0.7)', width:350, alignItems:'center',justifyContent:'center'}} >
+                        <TextInput
+                            style={{fontSize:18,textAlign:'center'}}
+                            placeholder='Name of marker'
+                            onChangeText={(val) => this.setState({name:val})}
+                            value={this.state.name}
+                        />
+                    </View>
+                    <TouchableOpacity
+                        onPress={() => this.handleSave()}
+                        style={styles.bubble}
+                    >
+                        <Text>Save Marker</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
         );
@@ -94,5 +156,17 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
         bottom: 0,
+    },
+    bubble: {
+        backgroundColor: 'rgba(255,255,255,0.9)',
+        paddingHorizontal: 18,
+        paddingVertical: 12,
+        borderRadius: 20,
+        alignItems:'center'
+    },
+    buttonContainer: {
+        flexDirection: 'column',
+        marginVertical: 20,
+        backgroundColor: 'transparent',
     },
 });
