@@ -23,7 +23,7 @@
    ```
 2. Install all depedencies on the package.json
    ```
-      cd ToDoApp
+      cd AppFunction
       npm install
    ```
 3. Run Interviewers
