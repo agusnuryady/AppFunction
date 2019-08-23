@@ -1,14 +1,25 @@
 <h1 align="center">:octocat: App Function (Map) :octocat:</h1>
 
   <p align="center">
-  Built with React Native
+  Built with React Native + Redux Saga + Redux Persist + e.t.c
    </p>
 
 ## Table of Contents
 
+- [Introduction](#introduction)
+- [Features](#features)
 - [Requirements](#requirements)
 - [Screenshots](#screenshots)
 - [Contributors](#contributors)
+
+## Introduction
+AppFunction is my Experiment Project for using a Many Extention Module like Camera, Maps, Notification, etc, you can see my code for help guides.
+
+## Features
+* Maps and Marking
+* Upload and Download File
+* Custom Camera
+* Push Notification
 
 ## Requirements
 * [`npm`](https://www.npmjs.com/get-npm)
@@ -37,6 +48,18 @@
     <img width="200" src="https://github.com/agusnuryady/AppFunction/blob/master/src/component/img/2.png">
     <img width="200" src="https://github.com/agusnuryady/AppFunction/blob/master/src/component/img/3.png">
     <img width="200" src="https://github.com/agusnuryady/AppFunction/blob/master/src/component/img/4.png">
+    <img width="200" src="https://github.com/agusnuryady/AppFunction/blob/master/src/component/img/5.png">
+    <img width="200" src="https://github.com/agusnuryady/AppFunction/blob/master/src/component/img/6.png">
+    <img width="200" src="https://github.com/agusnuryady/AppFunction/blob/master/src/component/img/7.png">
+    <img width="200" src="https://github.com/agusnuryady/AppFunction/blob/master/src/component/img/8.png">
+    <img width="200" src="https://github.com/agusnuryady/AppFunction/blob/master/src/component/img/9.png">
+    <img width="200" src="https://github.com/agusnuryady/AppFunction/blob/master/src/component/img/10.png">
+    <img width="200" src="https://github.com/agusnuryady/AppFunction/blob/master/src/component/img/11.png">
+    <img width="200" src="https://github.com/agusnuryady/AppFunction/blob/master/src/component/img/12.png">
+    <img width="200" src="https://github.com/agusnuryady/AppFunction/blob/master/src/component/img/13.png">
+    <img width="200" src="https://github.com/agusnuryady/AppFunction/blob/master/src/component/img/14.png">
+    <img width="200" src="https://github.com/agusnuryady/AppFunction/blob/master/src/component/img/15.png">
+    <img width="200" src="https://github.com/agusnuryady/AppFunction/blob/master/src/component/img/16.png">
 </div>
 
 ## Contributors
