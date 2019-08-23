@@ -1,0 +1,21 @@
+export const ADD_MYLOCATION = "ADD_MYLOCATION"
+export const DEL_MYLOCATION = "DEL_MYLOCATION"
+export const EDT_MYLOCATION = "EDT_MYLOCATION"
+
+export const ADD_LOCATIONS = "ADD_LOCATIONS"
+export const DEL_LOCATIONS = "DEL_LOCATIONS"
+export const EDT_LOCATIONS = "EDT_LOCATIONS"
+
+export const GET_USER = 'GET_USER'
+export const GET_USER_FULFILLED = 'GET_USER_FULFILLED'
+export const GET_USER_REJECTED = 'GET_USER_REJECTED'
+
+export const ADD_IMAGES = "ADD_IMAGES"
+export const DEL_IMAGES = "DEL_IMAGES"
+export const EDT_IMAGES = "EDT_IMAGES"
+
+export const GET_FILES = 'GET_FILES'
+export const GET_FILES_OK = 'GET_FILES_OK'
+export const GET_FILES_FULFILLED = 'GET_FILES_FULFILLED'
+export const GET_FILES_REJECTED = 'GET_FILES_REJECTED'
+export const DEL_FILES = 'DEL_FILES'
