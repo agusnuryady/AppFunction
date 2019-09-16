@@ -15,13 +15,15 @@ class Home extends Component {
         super(props)
         this.state={
             searchVisible: false,
+            page: 1,
         }
+            
     }
 
     async componentDidMount() {
         await this.findCurrentLocation()
         await this.props.fetchUsers()
-        await this.props.fetchFiles()
+        await this.props.fetchFiles(this.state.page)
     }
 
     async findCurrentLocation() {
@@ -102,6 +104,7 @@ class Home extends Component {
                                 Maps
                             </Text>
                         </View>
+                        
                         <View style={styles.menuBox} >
                             <TouchableHighlight
                                 underlayColor='rgba(0,0,0,0.8)'
@@ -239,7 +242,7 @@ const mapDispatchToProps = dispatch => {
         delData: () => dispatch(actionMyLocation.delData()),
         addData: data => dispatch(actionMyLocation.addData(data)),
         fetchUsers: () => dispatch(actionUsers.requestUserData()),
-        fetchFiles: () => dispatch(actionFiles.requestFilesData())
+        fetchFiles: page => dispatch(actionFiles.requestFilesData(page))
     }
 }
 

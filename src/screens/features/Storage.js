@@ -15,20 +15,26 @@ class Storage extends Component {
         this.state={
             refreshFiles:false,
             id:'',
+            loading: false,
         }
     }
 
-    async componentDidMount() {
-        await this.props.fetchFiles()
+    async componentWillMount() {
+        await this.props.clearFiles()
+        await this.props.fetchFiles(1)
     }
 
     fetchingFiles = async ()=> {
-            await this.props.fetchFiles()
-            await this.setState({refreshFiles:false})
+            await this.props.fetchFiles(this.props.Files.page + 1)
+            await this.setState({refreshFiles:false,loading:false})
     }
 
     async onRefreshFiles() {
         this.setState({refreshFiles:true}, function() {this.fetchingFiles()})
+    }
+
+    async onLoadMore() {
+        this.setState({loading:true}, function() {this.fetchingFiles()})
     }
 
     async downloadFile(uri) {
@@ -51,19 +57,39 @@ class Storage extends Component {
         })
     }
 
-    async deleteFile(file) {
+    async deleteFile(id) {
         try {
-            await axios.delete(`http://appexperiment.herokuapp.com/api/v1/file/delete/${file}`)
+            await axios.delete(`http://appexperiment.herokuapp.com/api/v1/file/delete/${id}`)
         } catch (e) {
             console.log(e); 
         }
-        await this.props.fetchFiles()
+        await this.props.clearFiles()
         await alert('data berhasil dihapus')
+        await this.props.fetchFiles(1)
+    }
+
+    renderFooter() {
+        return (
+            //Footer View with Load More button
+            <View style={{ padding: 10, justifyContent: 'center', alignItems: 'center', flexDirection: 'row',}}>
+                <TouchableOpacity
+                activeOpacity={0.9}
+                onPress={() => this.onLoadMore()}
+                disabled={this.state.loading}
+                //On Click of button calling loadMoreData function to load more data
+                style={{padding: 10, backgroundColor: '#5F42AB', borderRadius: 4, flexDirection: 'row', justifyContent: 'center', alignItems: 'center',}}>
+                <Text style={{color: 'white', fontSize: 15, textAlign: 'center',}}>Load More</Text>
+                {this.state.loading ? (
+                    <ActivityIndicator color="white" style={{ marginLeft: 8 }} />
+                ) : null}
+                </TouchableOpacity>
+            </View>
+        );
     }
 
     render() {
         console.log(this.props.Files.data);
-        
+        console.log(this.props.Files.page);
         if (this.props.Files.isLoading) {
             return (
                 <View style={{flex:1, margin:0}} >
@@ -123,7 +149,7 @@ class Storage extends Component {
                                                 </View>
                                             </TouchableOpacity>
                                             <TouchableOpacity
-                                                onPress={() => this.deleteFile(item.file)}
+                                                onPress={() => this.deleteFile(item.id)}
                                                 style={{flexDirection:'row', marginHorizontal:15, marginBottom:5, position:'absolute', right:0}} >
                                                 <View style={{flexDirection:'row', justifyContent:'center', alignItems:'center'}} >
                                                     <Text style={{color:'red', fontSize:17, marginRight:5}} >
@@ -135,6 +161,8 @@ class Storage extends Component {
                                         </View>
                                     </View>
                                 )}
+                                ItemSeparatorComponent={() => <View style={{height: 0.5, backgroundColor: 'rgba(0,0,0,0.4)',}} />}
+                                ListFooterComponent={this.renderFooter.bind(this)}
                                 keyExtractor={item => {
                                     return item.id.toString()
                                 }}
@@ -161,7 +189,8 @@ const mapStateProps = (state) => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        fetchFiles: () => dispatch(actionFiles.requestFilesData()),
+        fetchFiles: page => dispatch(actionFiles.requestFilesData(page)),
+        clearFiles: () => dispatch(actionFiles.clearFilesData()),
     }
 }
 

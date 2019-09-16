@@ -9,9 +9,9 @@ export const fetchUserData = async () => {
     }
 }
 
-export const fetchFilesData = async () => {
+export const fetchFilesData = async page => {
     try {
-        const response = await fetch("http://appexperiment.herokuapp.com/api/v1/files")
+        const response = await fetch(`http://appexperiment.herokuapp.com/api/v1/files/${page}`)
         const data = await response.json()
         return data
     } catch (e) {

@@ -3,6 +3,8 @@ import { Text, View, Image, TouchableOpacity, TextInput } from 'react-native'
 import ImagePicker from 'react-native-image-picker'
 import RNFetchBlob from 'react-native-fetch-blob'
 import {StackActions, NavigationActions} from 'react-navigation'
+import {connect} from 'react-redux'
+import * as actionFiles from '../../redux/actions/Files'
 
 const options = {
     title: 'Select a photo',
@@ -11,7 +13,7 @@ const options = {
     quality: 1
 }
 
-export default class Upload extends Component {
+class Upload extends Component {
 
     constructor(props){
         super(props)
@@ -46,26 +48,32 @@ export default class Upload extends Component {
     }
 
     async sendPhoto() {
-        await RNFetchBlob.fetch("POST", "http://appexperiment.herokuapp.com/api/v1/file/create", {
-            otherHeader : "foo",
-            'Content-Type': 'multipart/form-data',
-        }, [
-            {name: 'file', filename: 'image.jpg', data: RNFetchBlob.wrap(this.state.imageUri)},
-            {name: 'name', data: this.state.name},
-            {name: 'description', data: this.state.description},
-        ])
-        .then((res) => {
-            console.log(res.data);
-        })
-        .catch((err) => {
-            console.log(err, 'err');
-        })
-        await this.props.navigation.dispatch(StackActions.reset({
-            index:0,
-            actions: [
-                NavigationActions.navigate({ routeName: 'Storage' })
-            ]
-        }))
+        if (this.state.imageUri===null) {
+            alert('Please Upload Image')
+        } else {
+            await RNFetchBlob.fetch("POST", "http://appexperiment.herokuapp.com/api/v1/file/create", {
+                otherHeader : "foo",
+                'Content-Type': 'multipart/form-data',
+            }, [
+                {name: 'file', filename: 'image.jpg', data: RNFetchBlob.wrap(this.state.imageUri)},
+                {name: 'name', data: this.state.name},
+                {name: 'description', data: this.state.description},
+            ])
+            .then((res) => {
+                console.log(res.data);
+            })
+            .catch((err) => {
+                console.log(err, 'err');
+            })
+            await this.props.clearFiles()
+            await this.props.navigation.dispatch(StackActions.reset({
+                index:0,
+                actions: [
+                    NavigationActions.navigate({ routeName: 'Storage' })
+                ]
+            }))
+        }
+
     }
 
     render() {
@@ -115,3 +123,18 @@ export default class Upload extends Component {
         )
     }
 }
+
+const mapStateProps = (state) => {
+    return {
+        Files: state.Files,
+    }
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+        fetchFiles: page => dispatch(actionFiles.requestFilesData(page)),
+        clearFiles: () => dispatch(actionFiles.clearFilesData()),
+    }
+}
+
+export default connect(mapStateProps, mapDispatchToProps)(Upload)
