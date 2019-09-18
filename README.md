@@ -20,6 +20,9 @@ AppFunction is my Experiment Project for using a Many Extention Module like Came
 * Upload and Download File
 * Custom Camera
 * Push Notification
+* QRcode Scanner
+* Barcode Scanner
+* Skeleton Loader
 
 ## Requirements
 * [`npm`](https://www.npmjs.com/get-npm)
@@ -60,6 +63,9 @@ AppFunction is my Experiment Project for using a Many Extention Module like Came
     <img width="200" src="https://github.com/agusnuryady/AppFunction/blob/master/src/component/img/14.png">
     <img width="200" src="https://github.com/agusnuryady/AppFunction/blob/master/src/component/img/15.png">
     <img width="200" src="https://github.com/agusnuryady/AppFunction/blob/master/src/component/img/16.png">
+    <img width="200" src="https://github.com/agusnuryady/AppFunction/blob/master/src/component/img/17.png">
+    <img width="200" src="https://github.com/agusnuryady/AppFunction/blob/master/src/component/img/18.png">
+    <img width="200" src="https://github.com/agusnuryady/AppFunction/blob/master/src/component/img/19.png">
 </div>
 
 ## Contributors
