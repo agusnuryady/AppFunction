@@ -9,7 +9,6 @@
 - [Introduction](#introduction)
 - [Features](#features)
 - [Requirements](#requirements)
-- [How To Run](#How To Run)
 - [Screenshot](#screenshot)
 - [Contributors](#contributors)
 
