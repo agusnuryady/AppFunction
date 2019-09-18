@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
-import {StatusBar, PermissionsAndroid,StyleSheet,ActivityIndicator,View,Text,TextInput,Alert,TouchableHighlight,TouchableOpacity,TouchableWithoutFeedback,Dimensions,Image} from 'react-native'
+import {StatusBar, SafeAreaView, PermissionsAndroid,StyleSheet,ActivityIndicator,View,Text,TextInput,Alert,TouchableHighlight,TouchableOpacity,TouchableWithoutFeedback,Dimensions,Image} from 'react-native'
 import {Icon,Header,Content,Container,Thumbnail} from 'native-base'
+import SkeletonPlasceholder from 'react-native-skeleton-placeholder'
 import {connect} from 'react-redux'
 import styles from './styles'
 import * as actionMyLocation from '../../redux/actions/MyLocation'
@@ -16,6 +17,7 @@ class Home extends Component {
         this.state={
             searchVisible: false,
             page: 1,
+            loading:true,
         }
             
     }
@@ -53,22 +55,33 @@ class Home extends Component {
     }
 
     render() {
-        console.log(this.props.Users);
-        
         if (this.props.Files.isLoading) {
             return (
-                <View style={styles.container} >
-                    <ActivityIndicator
-                        animating={this.props.Files.isLoading}
-                        color="#19FAC2"
-                        size="large"
-                        style={{
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        height: height
-                        }}
-                    />
-                </View>
+                <SafeAreaView>
+                    <SkeletonPlasceholder>
+                        <View style={[styles.container, {alignItems:'center', flexDirection:'column'}]} >
+                            <View style={{flexDirection:'row', marginTop:60, marginBottom:70}} >
+                                <View style={{width:230, height:30, marginRight:70, marginLeft:20, borderRadius:20}} />
+                                <View style={{width:30, height:30, borderRadius:50}} />
+                            </View>
+                            <View style={{width:350, height:500, borderTopRightRadius:50, borderBottomRightRadius:50}} >
+                                
+                            </View>
+                        </View>
+                    </SkeletonPlasceholder>
+                </SafeAreaView>
+                // <View style={styles.container} >
+                //     <ActivityIndicator
+                //         animating={this.props.Files.isLoading}
+                //         color="#19FAC2"
+                //         size="large"
+                //         style={{
+                //         justifyContent: 'center',
+                //         alignItems: 'center',
+                //         height: height
+                //         }}
+                //     />
+                // </View>
             )
         } else {            
             return (
