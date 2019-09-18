@@ -45,7 +45,7 @@ AppFunction is my Experiment Project for using a Many Extention Module like Came
    $ react-native run-android
    ```
 
-## Screenshoot
+## Screenshot
 <div align="center">
     <img width="200" src="https://github.com/agusnuryady/AppFunction/blob/master/src/component/img/1.png">
     <img width="200" src="https://github.com/agusnuryady/AppFunction/blob/master/src/component/img/2.png">
