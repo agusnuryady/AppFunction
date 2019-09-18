@@ -160,7 +160,7 @@ class Home extends Component {
                         <View style={styles.menuBox} >
                             <TouchableHighlight
                                 underlayColor='rgba(0,0,0,0.8)'
-                                onPress={()=> alert('Pressed!')}
+                                onPress={()=> this.props.navigation.navigate('Barcode')}
                                 style={styles.menuButton} >
                                 <Icon name='barcode' type='FontAwesome' style={{color:'white'}} />
                             </TouchableHighlight>
@@ -173,7 +173,7 @@ class Home extends Component {
                         <View style={styles.menuBox} >
                             <TouchableHighlight
                                 underlayColor='rgba(0,0,0,0.8)'
-                                onPress={()=> alert('Pressed!')}
+                                onPress={()=> this.props.navigation.navigate('QRScan')}
                                 style={styles.menuButton} >
                                 <Icon name='qrcode-scan' type='MaterialCommunityIcons' style={{color:'white'}} />
                             </TouchableHighlight>

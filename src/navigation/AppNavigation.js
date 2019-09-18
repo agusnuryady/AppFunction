@@ -7,6 +7,8 @@ import Notification from '../screens/features/Notification'
 import ListPicture from '../screens/features/Camera/ListPicture'
 import Camera from '../screens/features/Camera/Camera'
 import SaveImage from '../screens/features/Camera/SaveImage'
+import QRScan from '../screens/features/QRScan'
+import Barcode from '../screens/features/Barcode'
 
 const AppNavigation = createStackNavigator({
     Home:Home,
@@ -17,6 +19,8 @@ const AppNavigation = createStackNavigator({
     ListPicture:ListPicture,
     Camera:Camera,
     SaveImage:SaveImage,
+    QRScan:QRScan,
+    Barcode:Barcode,
 },{
     initialRouteName:'Home',
     headerMode:'none'
