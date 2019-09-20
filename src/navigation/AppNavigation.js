@@ -9,6 +9,7 @@ import Camera from '../screens/features/Camera/Camera'
 import SaveImage from '../screens/features/Camera/SaveImage'
 import QRScan from '../screens/features/QRScan'
 import Barcode from '../screens/features/Barcode'
+import GoogleLogin from '../screens/features/GoogleLogin'
 
 const AppNavigation = createStackNavigator({
     Home:Home,
@@ -21,6 +22,7 @@ const AppNavigation = createStackNavigator({
     SaveImage:SaveImage,
     QRScan:QRScan,
     Barcode:Barcode,
+    GoogleLogin:GoogleLogin,
 },{
     initialRouteName:'Home',
     headerMode:'none'

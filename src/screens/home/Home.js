@@ -235,6 +235,19 @@ class Home extends Component {
                                 Table
                             </Text>
                         </View>
+                        <View style={styles.menuBox} >
+                            <TouchableHighlight
+                                underlayColor='rgba(0,0,0,0.8)'
+                                onPress={()=> this.props.navigation.navigate('GoogleLogin')}
+                                style={styles.menuButton} >
+                                <Icon name='google' type='AntDesign' style={{color:'white'}} />
+                            </TouchableHighlight>
+                            <Text
+                                numberOfLines={1} 
+                                style={styles.menuText} >
+                                Google Login
+                            </Text>
+                        </View>
                     </View>
                 </View>
             )
