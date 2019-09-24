@@ -9,7 +9,6 @@ class ListPicture extends Component {
     
     render() {
         console.log(this.props.ListImage.data);
-        
         return (
             <View style={{flex:1, margin:0}} >
                 <View style={{backgroundColor:'#5F42AB', alignItems:'center', justifyContent:'center', elevation:5}} >

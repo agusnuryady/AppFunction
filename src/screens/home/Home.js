@@ -70,18 +70,6 @@ class Home extends Component {
                         </View>
                     </SkeletonPlasceholder>
                 </SafeAreaView>
-                // <View style={styles.container} >
-                //     <ActivityIndicator
-                //         animating={this.props.Files.isLoading}
-                //         color="#19FAC2"
-                //         size="large"
-                //         style={{
-                //         justifyContent: 'center',
-                //         alignItems: 'center',
-                //         height: height
-                //         }}
-                //     />
-                // </View>
             )
         } else {            
             return (
@@ -147,7 +135,7 @@ class Home extends Component {
                         <View style={styles.menuBox} >
                             <TouchableHighlight
                                 underlayColor='rgba(0,0,0,0.8)'
-                                onPress={()=> alert('Pressed!')}
+                                onPress={()=> this.props.navigation.navigate('Chart')}
                                 style={styles.menuButton} >
                                 <Icon name='areachart' type='AntDesign' style={{color:'white'}} />
                             </TouchableHighlight>
@@ -199,14 +187,14 @@ class Home extends Component {
                         <View style={styles.menuBox} >
                             <TouchableHighlight
                                 underlayColor='rgba(0,0,0,0.8)'
-                                onPress={()=> alert('Pressed!')}
+                                onPress={()=> this.props.navigation.navigate('Tables')}
                                 style={styles.menuButton} >
-                                <Icon name='music' type='Feather' style={{color:'white'}} />
+                                <Icon name='table' type='AntDesign' style={{color:'white'}} />
                             </TouchableHighlight>
                             <Text
                                 numberOfLines={1} 
                                 style={styles.menuText} >
-                                Music
+                                Table
                             </Text>
                         </View>
                         <View style={styles.menuBox} >
@@ -220,19 +208,6 @@ class Home extends Component {
                                 numberOfLines={1} 
                                 style={styles.menuText} >
                                 Notification
-                            </Text>
-                        </View>
-                        <View style={styles.menuBox} >
-                            <TouchableHighlight
-                                underlayColor='rgba(0,0,0,0.8)'
-                                onPress={()=> alert('Pressed!')}
-                                style={styles.menuButton} >
-                                <Icon name='table' type='AntDesign' style={{color:'white'}} />
-                            </TouchableHighlight>
-                            <Text
-                                numberOfLines={1} 
-                                style={styles.menuText} >
-                                Table
                             </Text>
                         </View>
                         <View style={styles.menuBox} >

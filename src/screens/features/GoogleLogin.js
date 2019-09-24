@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { StyleSheet, Text, View, Alert, Image, ActivityIndicator, TouchableOpacity, } from 'react-native';
 import { GoogleSignin, GoogleSigninButton, statusCodes } from 'react-native-google-signin'
+import {LoginButton,LoginManager,AccessToken,GraphRequest,GraphRequestManager} from 'react-native-fbsdk'
 
 export default class GoogleLogin extends Component {
 
@@ -89,8 +90,8 @@ export default class GoogleLogin extends Component {
         }
     };
 
-
     render() {
+        console.log(this.state.userInfo);
          //returning Loader untill we check for the already signed in user
     if (this.state.gettingLoginStatus) {
         return (
@@ -123,12 +124,63 @@ export default class GoogleLogin extends Component {
             return (
                 <View style={styles.container}>
                 <GoogleSigninButton
-                    style={{ width: 230, height: 48 }}
+                    style={{ width: 230, height: 48, margin:10 }}
                     size={GoogleSigninButton.Size.Wide}
                     color={GoogleSigninButton.Color.Dark}
                     onPress={this._signIn}
                     disabled={this.state.isSigninInProgress} 
                 />
+                <LoginButton
+                    style={{ width: 230, height: 32, margin:10, }}
+                    publishPermissions={["publish_actions,user_birthday, user_religion_politics, user_relationships, user_relationship_details, user_hometown, user_location, user_likes, user_education_history, user_work_history, user_website, user_managed_groups, user_events, user_photos, user_videos, user_friends, user_about_me, user_status, user_games_activity, user_tagged_places, user_posts, user_actions.video, user_actions.news, user_actions.books, user_actions.music, user_actions.fitness, public_profile, basic_info"]}
+                    readPermissions={['public_profile']}
+                    onLoginFinished={
+                        (error, result) => {
+                            if (error) {
+                            alert("login has error: " + result.error);
+                            } else if (result.isCancelled) {
+                            alert("login is cancelled.");
+                            } else {
+                    
+                            AccessToken.getCurrentAccessToken().then(
+                                (data) => {
+                                let accessToken = data.accessToken
+                                alert(accessToken.toString())
+                    
+                                const responseInfoCallback = (error, result) => {
+                                    if (error) {
+                                    console.log(error)
+                                    alert('Error fetching data: ' + error.toString());
+                                    } else {
+                                    this.setState({userInfo:result})
+                                    console.log(result)
+                                    alert('Success fetching data: ' + result.toString());
+                                    }
+                                }
+                    
+                                const infoRequest = new GraphRequest(
+                                    '/me',
+                                    {
+                                    accessToken: accessToken,
+                                    parameters: {
+                                        fields: {
+                                        string: 'email,name,first_name,middle_name,last_name'
+                                        }
+                                    }
+                                    },
+                                    responseInfoCallback
+                                );
+                    
+                                // Start the graph request.
+                                new GraphRequestManager().addRequest(infoRequest).start()
+                    
+                                }
+                            )
+                    
+                            }
+                        }
+                    }
+                    onLogoutFinished={() => console.log("logout.")}/>
                 </View>
             );
             }

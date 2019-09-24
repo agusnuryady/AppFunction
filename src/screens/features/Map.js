@@ -1,10 +1,12 @@
 import React, { Component } from 'react'
 import { Text, View, TextInput, StyleSheet, Dimensions, PermissionsAndroid, TouchableOpacity } from 'react-native'
 import {Icon} from 'native-base'
-import MapView from 'react-native-maps'
-import {Marker} from 'react-native-maps'
+import MapView, {Marker} from 'react-native-maps'
+import MapViewDirections from 'react-native-maps-directions'
 import {connect} from 'react-redux'
 import * as actionMyLocation from '../../redux/actions/MyLocation'
+
+const GOOGLE_MAPS_APIKEY = 'AIzaSyCPrke9v5gaWHhBkI53kk7tm_DS1EdKJ4A';
 
 const { width, height } = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
@@ -24,15 +26,21 @@ class Maps extends Component {
     constructor(props){
         super(props)
         this.state={
+            event:1,
+            line:false,
             a: {
-                latitude: LATITUDE,
-                longitude: LONGITUDE,
+                latitude: '',
+                longitude: '',
             },
             b: {
                 latitude: '',
                 longitude: '',
                 latitudeDelta: LATITUDE_DELTA,
                 longitudeDelta: LONGITUDE_DELTA,
+            },
+            userLoc: {
+                latitude: '',
+                longitude: '',
             },
             name:'',
             longitude:'',
@@ -69,9 +77,16 @@ class Maps extends Component {
         this.setState({name:''})
     }
 
+    async setDestination() {
+        await this.setState({a:{latitude:this.state.b.latitude,longitude:this.state.b.longitude}})
+        await this.setState({line:true})
+    }
+
     async componentWillMount() {
-        this.setState({b:{latitude:this.props.MyLocation.latitude,longitude:this.props.MyLocation.longitude}})
-        this.setState({longitude:this.props.MyLocation.longitude, latitude:this.props.MyLocation.latitude})
+        await this.setState({b:{latitude:this.props.MyLocation.latitude,longitude:this.props.MyLocation.longitude}})
+//        await this.setState({a:{latitude:this.props.MyLocation.latitude,longitude:this.props.MyLocation.longitude}})
+        await this.setState({longitude:this.props.MyLocation.longitude, latitude:this.props.MyLocation.latitude})
+        await this.setState({userLoc:{longitude:this.props.MyLocation.longitude, latitude:this.props.MyLocation.latitude}})
     }
     
     render() {
@@ -88,27 +103,50 @@ class Maps extends Component {
                     //onPress={this.onMapPress}
                     onRegionChange={val => this.setState({b:val})}
                 >
-                    {/* <Marker
-                        draggable
-                        coordinate={this.state.b}
-                        onSelect={e => log('onSelect', e)}
-                        //onDrag={e => log('onDrag', e)}
-                        onDragStart={e => log('onDragStart', e)}
-                        onDragEnd={e => this.setState({longitude:e.nativeEvent.coordinate.longitude, latitude:e.nativeEvent.coordinate.latitude})}
-                        onPress={e => log('onPress', e)}
-                    /> */}
-                    {this.state.markers.map((marker) => (
+                    {this.state.event===2?
                         <Marker
-                            title={marker.description}
-                            key={marker.key}
-                            coordinate={marker.coordinate}
-                            pinColor={'gold'}
-                        />
-                    ))}
+                            coordinate={this.state.userLoc}
+                            title='My location'
+                            pinColor={'blue'}
+                        /> : null
+                    }
+                    {this.state.event===2&&this.state.a.latitude!==''?
+                        <Marker
+                            coordinate={this.state.a}
+                            title='My destination'
+                            pinColor={'red'}
+                        /> : null
+                    }
+                    {this.state.line?
+                        <MapViewDirections
+                            origin={this.state.userLoc}
+                            destination={this.state.a}
+                            apikey={GOOGLE_MAPS_APIKEY}
+                            strokeWidth={2}
+                            strokeColor='hotpink'
+                        /> : null
+                    }
+                    {this.state.event===3?
+                        this.state.markers.map((marker) => (
+                            <Marker
+                                title={marker.description}
+                                key={marker.key}
+                                coordinate={marker.coordinate}
+                                pinColor={'gold'}
+                            />
+                        )) : null
+                    }
                 </MapView>
-                <View style={styles.markerFixed} >
-                    <Icon name='location-pin' type='Entypo' style={{fontSize:40, color:'red'}} />
-                </View>
+                {this.state.event===2?
+                    <View style={styles.markerFixed} >
+                        <Icon name='location-pin' type='Entypo' style={{fontSize:40, color:'red'}} />
+                    </View> : null
+                }
+                {this.state.event===3?
+                    <View style={styles.markerFixed} >
+                        <Icon name='location-pin' type='Entypo' style={{fontSize:40, color:'red'}} />
+                    </View> : null
+                }
                 <View style={{position:'absolute', top:10, padding:20}} >
                     <View style={{marginBottom:20, borderRadius:40, backgroundColor:'rgba(255,255,255,0.9)', width:350, alignItems:'center',justifyContent:'center'}} >
                         <Text 
@@ -123,26 +161,62 @@ class Maps extends Component {
                     </View>
                 </View>
                 <View style={styles.buttonContainer}>
-                    {/* <TouchableOpacity
-                        onPress={() => this.setState({ markers: [] })}
-                        style={styles.bubble}
-                    >
-                        <Text>Tap to create a marker of random color</Text>
-                    </TouchableOpacity> */}
-                    <View style={{marginBottom:20, borderRadius:40, backgroundColor:'rgba(255,255,255,0.7)', width:350, alignItems:'center',justifyContent:'center'}} >
-                        <TextInput
-                            style={{fontSize:18,textAlign:'center'}}
-                            placeholder='Name of marker'
-                            onChangeText={(val) => this.setState({name:val})}
-                            value={this.state.name}
-                        />
-                    </View>
-                    <TouchableOpacity
-                        onPress={() => this.handleSave()}
-                        style={styles.bubble}
-                    >
-                        <Text>Save Marker</Text>
-                    </TouchableOpacity>
+                    {this.state.event === 1 ?
+                        <View>
+                            <TouchableOpacity
+                                onPress={() => this.setState({event:2})}
+                                style={styles.bubble}
+                            >
+                                <Text>Map Directioner</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={() => this.setState({event:3})}
+                                style={styles.bubble}
+                            >
+                                <Text>Map Marker</Text>
+                            </TouchableOpacity>
+                        </View> : null
+                    }
+                    {this.state.event === 2 ?
+                        <View>
+                            <TouchableOpacity
+                                onPress={() => this.setDestination()}
+                                style={styles.bubble}
+                            >
+                                <Text>Set Destination</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={() => this.setState({event:1})}
+                                style={styles.bubble}
+                            >
+                                <Text style={{color:'red'}} >Back</Text>
+                            </TouchableOpacity>
+                        </View> : null
+                    }
+                    {this.state.event === 3 ?
+                        <View>
+                            <View style={{marginBottom:20, borderRadius:40, backgroundColor:'rgba(255,255,255,0.7)', width:350, alignItems:'center',justifyContent:'center'}} >
+                                <TextInput
+                                    style={{fontSize:18,textAlign:'center'}}
+                                    placeholder='Name of marker'
+                                    onChangeText={(val) => this.setState({name:val})}
+                                    value={this.state.name}
+                                />
+                            </View>
+                            <TouchableOpacity
+                                onPress={() => this.handleSave()}
+                                style={styles.bubble}
+                            >
+                                <Text>Save Marker</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={() => this.setState({event:1})}
+                                style={styles.bubble}
+                            >
+                                <Text style={{color:'red'}} >Back</Text>
+                            </TouchableOpacity>
+                        </View> : null
+                    }
                 </View>
             </View>
         );
@@ -174,7 +248,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: 18,
         paddingVertical: 12,
         borderRadius: 20,
-        alignItems:'center'
+        alignItems:'center',
+        margin:10,
     },
     buttonContainer: {
         flexDirection: 'column',

@@ -19,6 +19,6 @@ export const clearFilesData = () => {
 export const delFile = data => {
     return {
         type: types.DEL_FILES,
-        payload: axios.delete(`http://appexperiment.herokuapp.com/api/v1/file/delete/${data.id}`, )
+        payload: axios.delete(`http://appexperiment.herokuapp.com/api/v1/file/delete/${data}`, )
     }
 }

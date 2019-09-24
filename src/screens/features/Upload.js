@@ -10,7 +10,7 @@ const options = {
     title: 'Select a photo',
     takePhotoButtonTittle: 'Take a photo',
     chooseFromLibraryButtonTittle: 'Choose from gallery',
-    quality: 1
+    quality: 1,
 }
 
 class Upload extends Component {
@@ -22,6 +22,7 @@ class Upload extends Component {
             data: null,
             name:'',
             description:'',
+            btnDisable: false,
         }
     }
 
@@ -51,6 +52,7 @@ class Upload extends Component {
         if (this.state.imageUri===null) {
             alert('Please Upload Image')
         } else {
+            await this.setState({btnDisable:true})
             await RNFetchBlob.fetch("POST", "http://appexperiment.herokuapp.com/api/v1/file/create", {
                 otherHeader : "foo",
                 'Content-Type': 'multipart/form-data',
@@ -113,6 +115,7 @@ class Upload extends Component {
                     <TouchableOpacity
                         onPress={this.sendPhoto.bind(this)}
                         style={{margin:15, paddingHorizontal:30, paddingVertical:10, alignItems:'center', backgroundColor:'#e5e5e5', borderRadius:20}}
+                        disabled={this.state.btnDisable}
                     >
                         <Text>
                             Upload

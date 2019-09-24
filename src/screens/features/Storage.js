@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { ActivityIndicator, Text, View, TouchableHighlight, TouchableOpacity, FlatList, Image, Dimensions, Alert} from 'react-native'
 import {Icon, Content} from 'native-base'
+import Swipeout from 'react-native-swipeout'
 import {connect} from 'react-redux'
 import RNFetchBlob from 'react-native-fetch-blob'
 import axios from 'axios'
@@ -61,7 +62,7 @@ class Storage extends Component {
         try {
             await axios.delete(`http://appexperiment.herokuapp.com/api/v1/file/delete/${id}`)
         } catch (e) {
-            console.log(e); 
+            console.log(e.response); 
         }
         await this.props.clearFiles()
         await alert('data berhasil dihapus')
@@ -88,8 +89,15 @@ class Storage extends Component {
     }
 
     render() {
-        console.log(this.props.Files.data);
-        console.log(this.props.Files.page);
+        console.log(this.state.id)
+
+        let swipeBtns = [{
+            text: 'Delete',
+            backgroundColor: 'red',
+            underlayColor: 'rgba(0, 0, 0, 1, 0.6)',
+            onPress: () => { this.deleteFile(this.state.id) },
+        }];
+
         if (this.props.Files.isLoading) {
             return (
                 <View style={{flex:1, margin:0}} >
@@ -126,40 +134,47 @@ class Storage extends Component {
                                 refreshing={this.state.refreshFiles}
                                 data={this.props.Files.data}
                                 renderItem={({item}) => (
-                                    <View style={{paddingTop:40, borderBottomWidth:0.8, borderBottomColor:'#f5f5f5', borderRadius:10}} >
-                                        <Image
-                                            style={{width:width, height:300}}
-                                            source={{uri:`http://appexperiment.herokuapp.com/upload/files/${item.file}`}}
-                                        />
-                                        <Text style={{fontSize:20, fontWeight:'bold', marginHorizontal:15, marginVertical:10}} >
-                                            {item.name}
-                                        </Text>
-                                        <Text style={{fontSize:16, marginHorizontal:15, marginVertical:10}} >
-                                            {item.description}
-                                        </Text>
-                                        <View style={{flexDirection:'row'}} >
-                                            <TouchableOpacity
-                                                onPress={() => this.downloadFile(item.file)}
-                                                style={{flexDirection:'row', marginHorizontal:15, marginBottom:5}} >
-                                                <View style={{flexDirection:'row', justifyContent:'center', alignItems:'center'}} >
-                                                    <Icon name='download' type='Entypo' style={{color:'blue'}} />
-                                                    <Text style={{color:'blue', fontSize:17, marginLeft:5}} >
-                                                        Download
-                                                    </Text>
-                                                </View>
-                                            </TouchableOpacity>
-                                            <TouchableOpacity
-                                                onPress={() => this.deleteFile(item.id)}
-                                                style={{flexDirection:'row', marginHorizontal:15, marginBottom:5, position:'absolute', right:0}} >
-                                                <View style={{flexDirection:'row', justifyContent:'center', alignItems:'center'}} >
-                                                    <Text style={{color:'red', fontSize:17, marginRight:5}} >
-                                                        Delete
-                                                    </Text>
-                                                    <Icon name='delete' type='AntDesign' style={{color:'red'}} />
-                                                </View>
-                                            </TouchableOpacity>
+                                    <Swipeout
+                                        right={swipeBtns}
+                                        autoClose={true}
+                                        backgroundColor='tranparent'
+                                        onOpen={()=> this.setState({id:item.id})}
+                                    >
+                                        <View style={{paddingTop:40, borderBottomWidth:0.8, borderBottomColor:'#f5f5f5', borderRadius:10}} >
+                                            <Image
+                                                style={{width:width, height:300}}
+                                                source={{uri:`http://appexperiment.herokuapp.com/upload/files/${item.file}`}}
+                                            />
+                                            <Text style={{fontSize:20, fontWeight:'bold', marginHorizontal:15, marginVertical:10}} >
+                                                {item.name}
+                                            </Text>
+                                            <Text style={{fontSize:16, marginHorizontal:15, marginVertical:10}} >
+                                                {item.description}
+                                            </Text>
+                                            <View style={{flexDirection:'row'}} >
+                                                <TouchableOpacity
+                                                    onPress={() => this.downloadFile(item.file)}
+                                                    style={{flexDirection:'row', marginHorizontal:15, marginBottom:5}} >
+                                                    <View style={{flexDirection:'row', justifyContent:'center', alignItems:'center'}} >
+                                                        <Icon name='download' type='Entypo' style={{color:'blue'}} />
+                                                        <Text style={{color:'blue', fontSize:17, marginLeft:5}} >
+                                                            Download
+                                                        </Text>
+                                                    </View>
+                                                </TouchableOpacity>
+                                                {/* <TouchableOpacity
+                                                    onPress={() => this.deleteFile(item.id)}
+                                                    style={{flexDirection:'row', marginHorizontal:15, marginBottom:5, position:'absolute', right:0}} >
+                                                    <View style={{flexDirection:'row', justifyContent:'center', alignItems:'center'}} >
+                                                        <Text style={{color:'red', fontSize:17, marginRight:5}} >
+                                                            Delete
+                                                        </Text>
+                                                        <Icon name='delete' type='AntDesign' style={{color:'red'}} />
+                                                    </View>
+                                                </TouchableOpacity> */}
+                                            </View>
                                         </View>
-                                    </View>
+                                    </Swipeout>
                                 )}
                                 ItemSeparatorComponent={() => <View style={{height: 0.5, backgroundColor: 'rgba(0,0,0,0.4)',}} />}
                                 ListFooterComponent={this.renderFooter.bind(this)}
