@@ -29,6 +29,7 @@
     "react-native-push-notification": "^3.1.9",
     "react-native-skeleton-placeholder": "^1.0.3",
     "react-native-svg": "^9.9.4",
+    "react-native-swipe-up-down": "^1.0.7",
     "react-native-swipeout": "^2.3.6",
     "react-native-table-component": "^1.2.1",
     "react-navigation": "^3.11.1",

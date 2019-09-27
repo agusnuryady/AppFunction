@@ -223,6 +223,19 @@ class Home extends Component {
                                 Google Login
                             </Text>
                         </View>
+                        <View style={styles.menuBox} >
+                            <TouchableHighlight
+                                underlayColor='rgba(0,0,0,0.8)'
+                                onPress={()=> this.props.navigation.navigate('Animations')}
+                                style={styles.menuButton} >
+                                <Icon name='play-circle-o' type='FontAwesome' style={{color:'white'}} />
+                            </TouchableHighlight>
+                            <Text
+                                numberOfLines={1} 
+                                style={styles.menuText} >
+                                Animation
+                            </Text>
+                        </View>
                     </View>
                 </View>
             )

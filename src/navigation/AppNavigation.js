@@ -12,6 +12,7 @@ import Barcode from '../screens/features/Barcode'
 import GoogleLogin from '../screens/features/GoogleLogin'
 import Chart from '../screens/features/Chart'
 import Tables from '../screens/features/Tables'
+import Animations from '../screens/features/Animations'
 
 const AppNavigation = createStackNavigator({
     Home:Home,
@@ -27,6 +28,7 @@ const AppNavigation = createStackNavigator({
     GoogleLogin:GoogleLogin,
     Chart:Chart,
     Tables:Tables,
+    Animations:Animations,
 },{
     initialRouteName:'Home',
     headerMode:'none'
