@@ -1,4 +1,5 @@
 import {createAppContainer, createStackNavigator} from 'react-navigation'
+import {FluidNavigator} from 'react-navigation-fluid-transitions'
 import Home from '../screens/home/Home'
 import Maps from '../screens/features/Map'
 import Storage from '../screens/features/Storage'
@@ -13,8 +14,10 @@ import GoogleLogin from '../screens/features/GoogleLogin'
 import Chart from '../screens/features/Chart'
 import Tables from '../screens/features/Tables'
 import Animations from '../screens/features/Animations'
+import ListChats from '../screens/features/Chats/ListChats'
+import Chats from '../screens/features/Chats/Chats'
 
-const AppNavigation = createStackNavigator({
+const AppNavigation = FluidNavigator({
     Home:Home,
     Maps:Maps,
     Storage:Storage,
@@ -29,6 +32,8 @@ const AppNavigation = createStackNavigator({
     Chart:Chart,
     Tables:Tables,
     Animations:Animations,
+    ListChats:ListChats,
+    Chats:Chats,
 },{
     initialRouteName:'Home',
     headerMode:'none'

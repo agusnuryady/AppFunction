@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import {StatusBar, SafeAreaView, PermissionsAndroid,StyleSheet,ActivityIndicator,View,Text,TextInput,Alert,TouchableHighlight,TouchableOpacity,TouchableWithoutFeedback,Dimensions,Image} from 'react-native'
 import {Icon,Header,Content,Container,Thumbnail} from 'native-base'
 import SkeletonPlasceholder from 'react-native-skeleton-placeholder'
+import {Transition, FluidNavigator} from 'react-navigation-fluid-transitions'
 import {connect} from 'react-redux'
 import styles from './styles'
 import * as actionMyLocation from '../../redux/actions/MyLocation'
@@ -224,16 +225,31 @@ class Home extends Component {
                             </Text>
                         </View>
                         <View style={styles.menuBox} >
-                            <TouchableHighlight
-                                underlayColor='rgba(0,0,0,0.8)'
-                                onPress={()=> this.props.navigation.navigate('Animations')}
-                                style={styles.menuButton} >
-                                <Icon name='play-circle-o' type='FontAwesome' style={{color:'white'}} />
-                            </TouchableHighlight>
+                            <Transition shared='circle' >
+                                <TouchableHighlight
+                                    underlayColor='rgba(0,0,0,0.8)'
+                                    onPress={()=> this.props.navigation.navigate('Animations')}
+                                    style={styles.menuButton} >
+                                    <Icon name='play-circle-o' type='FontAwesome' style={{color:'white'}} />
+                                </TouchableHighlight>
+                            </Transition>
                             <Text
                                 numberOfLines={1} 
                                 style={styles.menuText} >
                                 Animation
+                            </Text>
+                        </View>
+                        <View style={styles.menuBox} >
+                            <TouchableHighlight
+                                underlayColor='rgba(0,0,0,0.8)'
+                                onPress={()=> this.props.navigation.navigate('Chats')}
+                                style={styles.menuButton} >
+                                <Icon name='message' type='Entypo' style={{color:'white'}} />
+                            </TouchableHighlight>
+                            <Text
+                                numberOfLines={1} 
+                                style={styles.menuText} >
+                                Chating
                             </Text>
                         </View>
                     </View>

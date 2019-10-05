@@ -2,10 +2,13 @@ import React, { Component } from 'react'
 import { Text, View, TouchableWithoutFeedback, TouchableOpacity, FlatList, Animated, Easing, StyleSheet, Dimensions } from 'react-native'
 import {Icon} from 'native-base'
 import SwipeUpDown from 'react-native-swipe-up-down'
+import {Transition, FluidNavigator} from 'react-navigation-fluid-transitions'
+import AnimatedBar from './Component/AnimatedBar'
 
 var { width, height } = Dimensions.get('window');
 var available_width = width - 40 - 12;
 let negativeHeight = -height + 20;
+const DELAY = 150;
 
 export default class Animations extends Component {
 
@@ -14,6 +17,7 @@ export default class Animations extends Component {
         this.scaleValue = new Animated.Value(0)
         this.yTranslate = new Animated.Value(0)
         this.y_translate = new Animated.Value(0)
+        this.width = new Animated.Value(0)
         this.delayValue = 500;
         this.state = {
             isModalVisible:false,
@@ -28,12 +32,17 @@ export default class Animations extends Component {
                     {item:6},
                     {item:7},
                     {item:8},
-                ]
+                ],
+            
         };
     }
 
-    componentDidMount() {
+    componentWillMount() {
+        
+    }
 
+    componentDidMount() {
+        
     }
 
     componentDidUpdate() {
@@ -59,6 +68,7 @@ export default class Animations extends Component {
                 easing: Easing.linear,
             }).start();
         }
+        this.animateBar();
     }
     
     scale = ()=> {
@@ -105,6 +115,16 @@ export default class Animations extends Component {
         });
     }
 
+    animateBar = () => {
+        this.width.setValue(0); // initialize the animated value
+        this.state.data.map((value, index) => {
+            Animated.timing(this.width, {
+                toValue: value.item,
+                delay: index * 150 // how long to wait before actually starting the animation
+            }).start();
+        })
+    };
+
     render() {
         
 
@@ -133,13 +153,19 @@ export default class Animations extends Component {
             outputRange: [this.delayValue, 1]
         });
 
+        let barWidth = {
+            width: this.width
+        };
+
         return (
             <View style={styles.container} >
-                <TouchableWithoutFeedback onPress={()=> this.scale()}>
-                    <Animated.View style={transformStyle}>
-                        <Text style={{color:'white', fontSize:18}} >Scale Button</Text>
-                    </Animated.View>
-                </TouchableWithoutFeedback>
+                <Transition shared="circle">
+                    <TouchableWithoutFeedback onPress={()=> this.scale()}>
+                        <Animated.View style={transformStyle}>
+                            <Text style={{color:'white', fontSize:18}} >Scale Button</Text>
+                        </Animated.View>
+                    </TouchableWithoutFeedback>
+                </Transition>
                 {this.state.isModalVisible?
                     <Animated.View style={[styles.container2, translateStyle]}>
                         <View>
@@ -165,25 +191,27 @@ export default class Animations extends Component {
                         </View>
                     </Animated.View> : null
                 }
-                <Animated.View style={[styles.header_menu, {transform: [{translateY: menu_moveY}]}]}>
-                    {
-                        !this.state.menu_expanded &&
-                        <View style={styles.tip_menu}>
-                            <TouchableOpacity onPress={this.openMenu.bind(this)} style={{width:width, alignItems:'center'}}>
-                                <Icon name="dots-three-horizontal" type='Entypo' size={50} color="#fff" />
-                            </TouchableOpacity>
-                        </View>
-                    }
-                    {this.state.menu_expanded?
-                        <View style={{flex:1, flexDirection:'column', alignItems:'center', justifyContent:'center'}} >
-                            <TouchableOpacity onPress={this.hideMenu.bind(this)} style={styles.button}>
-                                <Text style={{fontSize:18}} >
-                                    Close
-                                </Text>
-                            </TouchableOpacity>
-                        </View> : null
-                    }
-                </Animated.View>
+                <Transition shared="circle">
+                    <Animated.View style={[styles.header_menu, {transform: [{translateY: menu_moveY}]}]}>
+                        {
+                            !this.state.menu_expanded &&
+                            <View style={styles.tip_menu}>
+                                <TouchableOpacity onPress={this.openMenu.bind(this)} style={{width:width, alignItems:'center'}}>
+                                    <Icon name="dots-three-horizontal" type='Entypo' size={50} color="#fff" />
+                                </TouchableOpacity>
+                            </View>
+                        }
+                        {this.state.menu_expanded?
+                            <View style={{flex:1, flexDirection:'column', alignItems:'center', justifyContent:'center'}} >
+                                <TouchableOpacity onPress={this.hideMenu.bind(this)} style={styles.button}>
+                                    <Text style={{fontSize:18}} >
+                                        Close
+                                    </Text>
+                                </TouchableOpacity>
+                            </View> : null
+                        }
+                    </Animated.View>
+                </Transition>
                 <SwipeUpDown		
                     itemMini={
                         <View>
@@ -191,12 +219,18 @@ export default class Animations extends Component {
                         </View>
                     } // Pass props component when collapsed
                     itemFull={
-                        <View style={[styles.listItem, {width:350} ]} >
-                            <View style={{backgroundColor:'#49BD78', width:80, height:80, borderRadius:10, margin:10}} />
-                            <Text style={{marginLeft:30, fontSize:20}} >
-                                This is content item
-                            </Text>
-                        </View>
+                        <FlatList
+                            data={this.state.data}
+                            keyExtractor={(item, index) => item.item.toString()}
+                            renderItem={({item, index}) => (
+                                <View style={[styles.listItem, {width:300}]} >
+                                    <Text style={{margin:10, fontSize:20}} >
+                                        {item.item}
+                                    </Text>
+                                    <AnimatedBar value={item.item} delay={DELAY * index} key={index} />
+                                </View>
+                            )}
+                        />
                     } // Pass props component when show full}
                     animation='easeInEaseOut'
                     swipeHeight={100}
@@ -261,4 +295,8 @@ const styles = StyleSheet.create({
     listItem: {
         height:100, backgroundColor:'white', margin:5, borderRadius:10, flexDirection:'row', alignItems:'center'
     },
+    bar: {
+        height:40,
+        backgroundColor:'red'
+    }
 });
