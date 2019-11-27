@@ -6,6 +6,8 @@ import Users from './Users'
 import rootSaga from '../sagas/rootSaga'
 import ListImage from './ListImage'
 import Files from './Files'
+import ChatList from './ChatList'
+import Rooms from './Rooms'
 
 const router = createNavigationReducer(AppNavigation)
 
@@ -16,6 +18,8 @@ const appReducer = combineReducers({
     Users: Users,
     ListImage: ListImage,
     Files: Files,
+    ChatList: ChatList,
+    Rooms: Rooms    
 })
 
 export default appReducer

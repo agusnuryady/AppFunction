@@ -94,7 +94,8 @@ export default class Animations extends Component {
             this.y_translate,
             {
                 toValue: 1,
-                friction: 3
+                friction: 3,
+                useNativeDriver: true,
             }
             ).start();
         });
@@ -109,7 +110,8 @@ export default class Animations extends Component {
             this.y_translate,
             {
                 toValue: 0,
-                friction: 4
+                friction: 4,
+                useNativeDriver: true,
             }
             ).start();
         });
@@ -120,7 +122,8 @@ export default class Animations extends Component {
         this.state.data.map((value, index) => {
             Animated.timing(this.width, {
                 toValue: value.item,
-                delay: index * 150 // how long to wait before actually starting the animation
+                delay: index * 150, // how long to wait before actually starting the animation,
+                useNativeDriver: true,
             }).start();
         })
     };

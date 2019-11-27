@@ -2,106 +2,58 @@ import React, { Component } from 'react'
 import { Text, View, StyleSheet, Dimensions, FlatList, TextInput, TouchableOpacity } from 'react-native'
 import {Icon} from 'native-base'
 import axios from 'axios'
-import AsyncStorage from '@react-native-community/async-storage'
+import {connect} from 'react-redux'
+
+import connection from './socketConnection'
+import * as actionChats from '../../../redux/actions/ChatList'
 
 var {width,height}=Dimensions.get('window')
+let subscription;
 
-export default class Chats extends Component {
+class Chats extends Component {
     
     constructor(props){
         super(props)
         this.state={
-            messages:[],
+            messages: [],
             textInput:'',
-            token:'',
-            group:[],
-            id_user:'',
-            id_chats:'',
-            chatItem:'',
+            name:''
         }       
     }
 
     componentDidMount() {
-        // AsyncStorage.getItem('tokenJwt', (err, result) => {
-        //     if (result) {
-        //         this.setState({
-        //             token: result
-        //         })
-        //     }
-        // })
-        // this.fetchUser()
-        // this.fetchRoom()
-        // this.fetchMessages()
+        connection.connect();
+
+        // storing the subscription in the global variable
+        // passing the incoming data handler fn as a second argument
+        subscription = connection.subscribe(`room:${this.props.id}`, this.handleMessageAdd);
+    
+        // loading existing messages
+        this.props.requestChatList(this.props.id)
     }
 
-    fetchUser = ()=> {
-        axios({
-            method: 'GET',
-            headers: {
-                "Authorization": `Bearer ${this.state.token}`,
-                "content-type":"appilcation/json"
-            },
-            url:url+'users/user',
-        })
-        .then(res => {this.setState({id_user: res.data.id})})
-        this.setState({isFetching:false})
+    componentWillUnmount () {
+        subscription.close();
     }
-
-    fetchRoom = ()=> {
-        sendData = async ()=> {
-            await axios({
-                method: 'POST',
-                headers: {
-                    "Authorization": `Bearer ${this.state.token}`
-                },
-                url:`${url}users/room/${this.props.id}`
-            })
-            .then(res => {
-                this.setState({group: res.data})
-            })
-            this.setState({isFetching:false})
+    
+    handleMessageAdd = message => {
+        const { type, data } = message;
+    
+        // you could handle various types here, like deleting or editing a message
+        switch (type) {
+        case 'room:newMessage':
+            this.props.addChatList(data)
+            break;
+        default:
         }
-        sendData()
-    }
-
-    fetchMessages = ()=> {
-        sendData = async ()=> {
-            await axios({
-                method: 'POST',
-                headers: {
-                    "Authorization": `Bearer ${this.state.token}`
-                },
-                url:`${url}users/messages/${this.props.id}`
-            })
-            .then(res => {
-                this.setState({messages: res.data})
-                console.log(res.data)
-            })
-            this.setState({isFetching:false})
-        }
-        sendData()
-    }
-
+    };
+    
     async sendChatButton() {
-        const {textInput} = this.state
+        const {textInput, name} = this.state
 
-        const res = await axios({
-            method: 'POST',
-            headers: {
-                'Authorization' : `Bearer ${this.state.token}`,
-                'content-type':'application/json'
-            },
-            url:url+'users/message',
-            data: {
-                message: textInput,
-                room: this.props.id
-            }
-        })
-        .then(res=>{console.log(res.data)})
+        this.props.sendChat({name: name, message: textInput, id: this.props.id})
 
-        this.fetchMessages()
-
-        this.setState({textInput:''})
+        this.setState({textInput:'', name:''})
     }
 
 
@@ -114,28 +66,15 @@ export default class Chats extends Component {
                     inverted
                     // onRefresh={() => this.onRefresh()}
                     // refreshing={this.state.isFetching}
-                    data={this.state.messages}
+                    data={this.props.ChatList.data}
                     renderItem={({item}) => (
-                        <View style={[this.state.id_user === item.user_id ? styles.chatBoxUser : styles.chatBox]}>
-                            <View style={[this.state.id_user === item.user_id ? styles.chatBox1User : styles.chatBox1]}>
-                                <Thumbnail
-                                    small
-                                    source={{uri:item.user.image_profil}}
-                                />
-                            </View>
-                            <TouchableOpacity
-                                onLongPress={
-                                    () => {this.state.id_user === item.user_id ?  this.modalChat(item.id):null}
-                                }
-                                style={[this.state.id_user === item.user_id ? styles.chatBox2User : styles.chatBox2]}
-                            >
-                                <Text style={this.state.id_user === item.user_id ? styles.chatTextUser:styles.chatText}>
-                                    {this.state.id_user === item.user_id ? 'Me':item.user.username}
-                                </Text>
-                                <Text style={this.state.id_user === item.user_id ? styles.chatText2User:styles.chatText2} >
-                                    {item.message}
-                                </Text>
-                            </TouchableOpacity>
+                        <View style={styles.chatBox}>
+                            <Text style={styles.chatText}>
+                                {item.name}
+                            </Text>
+                            <Text style={styles.chatText2} >
+                                {item.message}
+                            </Text>
                         </View>
                     )}
                     keyExtractor={(item)=> { return item.id.toString()}}
@@ -150,6 +89,14 @@ export default class Chats extends Component {
                         multiline={true}
                         
                         placeholder='Write Something..'
+                    />
+                    <TextInput
+                        style={styles.textInputBottomValue}
+                        onChangeText={(name)=> {this.setState({name})}}
+                        value={this.state.name}
+                        multiline={true}
+                        
+                        placeholder='Write your name..'
                     />
                     <TouchableOpacity
                         style={styles.buttonBottom}
@@ -331,3 +278,19 @@ const styles = StyleSheet.create({
         color:'red'
     },
 })
+
+const mapStateProps = (state) => {
+    return {
+        ChatList: state.ChatList
+    }
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+        fetchChats: id => dispatch(actionChats.requestChatList(id)),
+        addChatList: data => dispatch(actionChats.addChatList(data)),
+        sendChat: data => dispatch(actionChats.createChats(data))
+    }
+}
+
+export default connect(mapStateProps, mapDispatchToProps)(Chats)

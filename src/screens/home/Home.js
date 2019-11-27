@@ -242,7 +242,7 @@ class Home extends Component {
                         <View style={styles.menuBox} >
                             <TouchableHighlight
                                 underlayColor='rgba(0,0,0,0.8)'
-                                onPress={()=> this.props.navigation.navigate('Chats')}
+                                onPress={()=> this.props.navigation.navigate('ListChats')}
                                 style={styles.menuButton} >
                                 <Icon name='message' type='Entypo' style={{color:'white'}} />
                             </TouchableHighlight>

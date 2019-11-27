@@ -16,6 +16,7 @@ import Tables from '../screens/features/Tables'
 import Animations from '../screens/features/Animations'
 import ListChats from '../screens/features/Chats/ListChats'
 import Chats from '../screens/features/Chats/Chats'
+import ListContact from '../screens/features/Chats/ListContact'
 
 const AppNavigation = FluidNavigator({
     Home:Home,
@@ -34,6 +35,7 @@ const AppNavigation = FluidNavigator({
     Animations:Animations,
     ListChats:ListChats,
     Chats:Chats,
+    ListContact:ListContact
 },{
     initialRouteName:'Home',
     headerMode:'none'
